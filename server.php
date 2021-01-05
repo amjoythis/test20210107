@@ -15,3 +15,24 @@ foreach ($_SERVER as $chave=>$valor){
 $ul."</ul>";
 
 echo $ul;
+
+/*
+ * estamos a acompanhar esta escrita com Git
+ * queremos introduzir git branch
+ * criar "ramos" / "contextos de dev"
+ * git branch <nomeDoRamo>
+ * por exemplo, fizémos
+ * git branch get
+ * mas depois não gostamos do nome "get"
+ * e quisemos mudá-lo para "branchGet"
+ * git branch -m get branchGet
+ *
+ * para passar a trabalhar no context do novo
+ * ramos
+ *
+ * git checkout <nomeDoRamo>
+ * no nosso caso
+ * git checkout branchGet
+ *
+ * e estou no branch
+ */
