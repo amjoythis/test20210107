@@ -80,11 +80,27 @@ function momentoPostCom1Binario(){
     foreach($_FILES as $nameUsadoNoHtml => $valorFornecido){
         receiveSingleFile($nameUsadoNoHtml);
     }
-
 }//momentoPostCom1Binario
 
+/*
+ * array (size=1)
+  'fotos' =>
+    array (size=5)
+      'name' =>
+        array (size=3)
+          0 => string '20201029_aca.zip' (length=16)
+          1 => string '20201112_aca.zip' (length=16)
+          2 => string '20201124_aca.zip' (length=16)
+      'type' =>
+        array (size=3)
+          0 => string 'application/octet-stream' (length=24)
+          1 => string 'application/octet-stream' (length=24)
+          2 => string 'application/octet-stream' (length=24)
+
+...
+ */
 function bThereAreMultipleBinaries(
-    $pHtmlFileElementName
+    $pHtmlFileElementName // "fotos"
 ){
     $b = is_array($_FILES[$pHtmlFileElementName]['name']) &&
         count($_FILES[$pHtmlFileElementName]['name'])>0;
@@ -123,8 +139,44 @@ function receiveSingleFile(
     return false;
 }
 
+function momentoPostComNBinarios(
+    $pDestinationFolder = "./uploads/"
+){
+    @mkdir($pDestinationFolder, 777, true);
 
-momentoCGI();
-momentoGet();
-momentoPost();
-momentoPostCom1Binario();
+    foreach ($_FILES as $htmlName => $currentKey){
+        $iHowManyUploads = count($_FILES[$htmlName]['name']);
+        for ($idx=0; $idx<$iHowManyUploads; $idx++){
+            $strOriginalName = $_FILES[$htmlName]['name'][$idx];
+            $strTmpName = $_FILES[$htmlName]['tmp_name'][$idx];
+            $iSize = $_FILES[$htmlName]['size'][$idx]; //bytes
+            $iError = $_FILES[$htmlName]['error'][$idx];
+            $strType = $_FILES[$htmlName]['type'][$idx]; //MIME type
+
+            if ($iError===0){
+                echo "File $strOriginalName was correctly uploaded<br>";
+
+                $bFalseOnFailure =
+                    move_uploaded_file(
+                        $strTmpName,
+                        $pDestinationFolder.$strOriginalName
+                    );
+
+                echo $bFalseOnFailure===false ?
+                    "Failed to move file $strOriginalName<br>"
+                    :
+                    "OK in moving file $strOriginalName to the uploads folder<br>";
+
+            }//if no error in uploading the file
+            else{
+                echo "Could NOT upload file $strOriginalName";
+            }
+        }//for each of the uploads
+    }//foreach
+}//momentoPostComNBinarios
+
+//momentoCGI();
+//momentoGet();
+//momentoPost();
+//momentoPostCom1Binario();
+momentoPostComNBinarios();
